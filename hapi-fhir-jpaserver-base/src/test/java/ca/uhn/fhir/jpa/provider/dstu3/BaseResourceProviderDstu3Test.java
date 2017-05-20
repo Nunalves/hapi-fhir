@@ -117,7 +117,10 @@ public abstract class BaseResourceProviderDstu3Test extends BaseJpaDstu3Test {
 			dispatcherServlet.setContextClass(AnnotationConfigWebApplicationContext.class);
 			ServletHolder subsServletHolder = new ServletHolder();
 			subsServletHolder.setServlet(dispatcherServlet);
-			subsServletHolder.setInitParameter(ContextLoader.CONFIG_LOCATION_PARAM, WebsocketDstu3Config.class.getName() + "\n" + WebsocketDstu3DispatcherConfig.class.getName());
+			subsServletHolder.setInitParameter(
+					ContextLoader.CONFIG_LOCATION_PARAM, 
+					WebsocketDstu3Config.class.getName() + "\n" + 
+					WebsocketDstu3DispatcherConfig.class.getName());
 			proxyHandler.addServlet(subsServletHolder, "/*");
 
 			// Register a CORS filter

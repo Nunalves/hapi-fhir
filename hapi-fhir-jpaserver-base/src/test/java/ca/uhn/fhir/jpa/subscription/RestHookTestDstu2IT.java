@@ -16,7 +16,7 @@
  *  @author Jeff Chung
  */
 
-package ca.uhn.fhir.jpa.demo.subscription;
+package ca.uhn.fhir.jpa.subscription;
 
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 @Ignore
 public class RestHookTestDstu2IT {
 
-    private static final Logger ourLog = org.slf4j.LoggerFactory.getLogger(FhirSubscriptionWithSubscriptionIdDstu3IT.class);
+    private static final Logger ourLog = org.slf4j.LoggerFactory.getLogger(FhirSubscriptionWithSubscriptionIdDstu3Test.class);
     private static String code = "1000000012";
     private IGenericClient client = FhirServiceUtil.getFhirDstu2Client();
 

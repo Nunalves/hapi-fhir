@@ -16,7 +16,7 @@
  *  @author Jeff Chung
  */
 
-package ca.uhn.fhir.jpa.demo.subscription;
+package ca.uhn.fhir.jpa.subscription;
 
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
@@ -26,6 +26,7 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Subscription;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -34,9 +35,16 @@ import org.slf4j.Logger;
  * Test the rest-hook subscriptions
  */
 @Ignore
-public class RestHookTestDstu3WithSubscriptionResponseCriteriaIT {
+public class RestHookTestDstu3IT {
 
-    private static final Logger ourLog = org.slf4j.LoggerFactory.getLogger(FhirSubscriptionWithSubscriptionIdDstu3IT.class);
+    private static final Logger ourLog = org.slf4j.LoggerFactory.getLogger(FhirSubscriptionWithSubscriptionIdDstu3Test.class);
+    private IGenericClient client = FhirServiceUtil.getFhirDstu3Client();
+
+    @Before
+    public void clean() {
+        RemoveDstu3TestIT.deleteResources(Subscription.class, null, client);
+        RemoveDstu3TestIT.deleteResources(Observation.class, null, client);
+    }
 
     @Test
     public void testRestHookSubscription() {
@@ -49,11 +57,11 @@ public class RestHookTestDstu3WithSubscriptionResponseCriteriaIT {
         String criteria1 = "Observation?code=SNOMED-CT|" + code + "&_format=xml";
         String criteria2 = "Observation?code=SNOMED-CT|" + code + "111&_format=xml";
 
-        Subscription subscription1 = createSubscription(criteria1, "Observation?_format=xml", endpoint, client);
+        Subscription subscription1 = createSubscription(criteria1, payload, endpoint, client);
         Subscription subscription2 = createSubscription(criteria2, payload, endpoint, client);
 
         Observation observation1 = sendObservation(code, "SNOMED-CT", client);
-        //Should see a bundle
+        //Should see only one subscription notification
 
         Subscription subscriptionTemp = client.read(Subscription.class, subscription2.getId());
         Assert.assertNotNull(subscriptionTemp);
@@ -98,6 +106,7 @@ public class RestHookTestDstu3WithSubscriptionResponseCriteriaIT {
         subscription.setReason("Monitor new neonatal function (note, age will be determined by the monitor)");
         subscription.setStatus(Subscription.SubscriptionStatus.REQUESTED);
         subscription.setCriteria(criteria);
+
         Subscription.SubscriptionChannelComponent channel = new Subscription.SubscriptionChannelComponent();
         channel.setType(Subscription.SubscriptionChannelType.RESTHOOK);
         channel.setPayload(payload);
